@@ -35,7 +35,8 @@ function abort
     exit 1
 }
 
-[ -z $TMPDIR ] || [ ! -d $TMPDIR ] && abort "Invalid TMPDIR variable."
+# https://unix.stackexchange.com/a/174818
+TMPDIR=$(dirname $(mktemp -u))
 
 function download
 {
