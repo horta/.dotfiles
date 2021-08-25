@@ -99,7 +99,8 @@ setopt hist_ignore_dups
 # line is a space.
 setopt hist_ignore_space
 
-export EDITOR=vim
+export EDITOR=nano
+command -v vim 2>&1 >/dev/null && export EDITOR=vim
 command -v nvim 2>&1 >/dev/null && export EDITOR=nvim
 export VISUAL=$EDITOR
 

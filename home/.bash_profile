@@ -1,5 +1,3 @@
-source ~/.alias
-
 HISTCONTROL=ignoreboth
 shopt -s histappend
 HISTSIZE=10000
@@ -38,3 +36,10 @@ if ! shopt -oq posix; then
         . /etc/bash_completion
     fi
 fi
+
+export EDITOR=nano
+command -v vim 2>&1 >/dev/null && export EDITOR=vim
+command -v nvim 2>&1 >/dev/null && export EDITOR=nvim
+export VISUAL=$EDITOR
+
+source ~/.alias
