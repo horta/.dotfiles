@@ -57,7 +57,7 @@ function exec_manifest_instr
     download $url || abort "Failed to download $filename."
     echo "$hsh  $filename" >$filename.sha1
     sha1sum --quiet --check $filename.sha1 || abort "Hash failed for $filename."
-    /bin/mv $filename $__dir__/$dst/
+    /bin/mv $filename $__dir__/$dst/ || abort "Failed to move $filename."
     chmod +x $__dir__/$dst/$filename || abort "Failed to chmod $filename."
     popd >/dev/null
 }
@@ -66,12 +66,9 @@ while IFS= read -r line; do
     exec_manifest_instr $line
 done <$__dir__/MANIFEST
 
-exit 0
+[ -f home/.DS_Store ] && /bin/rm home/.DS_Store
+[ -f home/bin/.DS_Store ] && /bin/rm home/bin/.DS_Store
+[ -f home/bin/lsf/.DS_Store ] && /bin/rm home/bin/lsf/.DS_Store
 
-for dir in home/*; do
-    echo $dir
-    # stow -D $dir
-    # stow $dir
-done
-
-popd >/dev/null
+stow -v -D home
+stow -v home
