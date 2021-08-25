@@ -1,0 +1,118 @@
+#!/usr/bin/env python3
+
+from pathlib import Path
+import subprocess
+import configparser
+import importlib
+import importlib.metadata
+import subprocess
+import os
+import sys
+import re
+
+
+def conda_forge_feedstock():
+    metafile = Path("recipe/meta.yaml")
+    if not metafile.exists():
+        return
+
+    for row in open(metafile, "r"):
+        m = re.search(r"version = \"([\d.]*)\"", row)
+        if m is None:
+            continue
+        version = m.groups()[0]
+        print(f"{version}\t({metafile})")
+        break
+
+
+def is_git_repo():
+    cmd = subprocess.run(["git", "-C", ".", "rev-parse"])
+    return cmd.returncode == 0
+
+
+def cmakelists_version():
+    cmakelists = Path("CMakeLists.txt")
+    if not cmakelists.exists():
+        return
+
+    for row in open(cmakelists, "r"):
+        m = re.search(r"project *\(.* VERSION ([\d.]*)", row, re.IGNORECASE)
+        if m is None:
+            continue
+        version = m.groups()[0]
+        print(f"{version}\t({cmakelists})")
+        break
+
+
+def github_release():
+    import requests
+    import subprocess
+
+    cmd = subprocess.run(
+        ["git", "config", "--get", "remote.origin.url"], capture_output=True
+    )
+    org, repo = cmd.stdout.decode().strip().split("/")[-2:]
+    if repo.endswith(".git"):
+        repo = repo[:-4]
+
+    url = f"https://api.github.com/repos/{org}/{repo}/releases/latest"
+
+    r = requests.get(url)
+    version = r.json().get("tag_name", None)
+    if version is not None:
+        print(f"{version}\t(Github release)")
+
+
+def git_tag():
+    cmd = "git tag --sort=version:refname | tail -n 1"
+    output = subprocess.check_output(cmd, shell=True)
+    version = output.decode().strip()
+    print(f"{version}\t(git-tag)")
+
+
+def python_package():
+    sys.path.insert(0, os.path.join(os.getcwd()))
+    modname = os.path.basename(os.getcwd()).replace("-", "_")
+
+    def modname_setupcfg() -> str:
+        config = configparser.ConfigParser()
+        config.read("setup.cfg")
+        return config["metadata"]["name"].replace("-", "_")
+
+    try:
+        v = importlib.metadata.version(modname)
+        print(f"{v}\t(py.importlib.metadata)")
+    except importlib.metadata.PackageNotFoundError:
+        modname = modname_setupcfg()
+        try:
+            v = importlib.metadata.version(modname)
+            print(f"{v}\t(py.importlib.metadata)")
+        except importlib.metadata.PackageNotFoundError:
+            pass
+
+    mod = importlib.import_module(modname)
+    v = getattr(mod, "__version__")
+    print(f"{v}\t(__version__)")
+    return modname
+
+
+def python_pypi(pkg):
+    output = subprocess.check_output(f"epip {pkg}", shell=True).decode()
+    version = output.strip()
+    print(f"{version}\t(pypi)")
+
+
+if __name__ == "__main__":
+    if is_git_repo():
+        github_release()
+        git_tag()
+
+    if Path("CMakeLists.txt").exists():
+        cmakelists_version()
+
+    if Path("conda-forge.yml").exists():
+        conda_forge_feedstock()
+
+    if Path("setup.py").exists():
+        modname = python_package()
+        python_pypi(modname)

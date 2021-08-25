@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [ "$#" != "1" ]
+then
+    echo "Usage: byprof PYTHON_SCRIPT"
+    exit 1
+fi
+
+name=$(basename $1)
+output="${name%.*}".svg
+
+sudo py-spy record -o $output -- python $1

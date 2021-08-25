@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+while true; do
+    echo "1: neovim"
+    echo "2: zsh"
+    echo "3: wezterm"
+    echo "4: kitty"
+    echo "5: alacritty"
+    read -n  1 -p "Which program do you want to config? " answer
+    case $answer in
+        [1]* ) (cd $HOME/.config/nvim && $EDITOR init.lua); break;;
+        [2]* ) (cd $HOME/ && $EDITOR .zshrc); break;;
+        [3]* ) (cd $HOME/.config/wezterm/ && $EDITOR wezterm.lua); break;;
+        [4]* ) (cd $HOME/.config/kitty/ && $EDITOR kitty.conf); break;;
+        [5]* ) (cd $HOME/.config/alacritty/ && $EDITOR alacritty.yml); break;;
+        [qe]* ) exit;;
+        * ) echo "Please select a number or q/e to exit.";;
+    esac
+done

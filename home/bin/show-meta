@@ -1,0 +1,18 @@
+#!/bin/bash
+
+filepath="$@"
+if [ ! -f "$filepath" ]
+then
+    >&2 echo "\"$filepath\" is not a file path."
+    exit 1
+fi
+
+mime=$(file "$filepath" --mime-type --brief)
+mime1=${mime%/*}
+
+if [ "$mime1" == "image" ]
+then
+    exiftool "$filepath"
+else
+    >&2 echo "Unrecognized mime: $mime"
+fi

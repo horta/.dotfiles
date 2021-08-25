@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+url=$1
+if (( $# != 1 ))
+then
+    prog=$(basename $0)
+    echo "Usage: $prog <url>"
+    exit 1
+fi
+curl https://is.gd/create.php\?format\=simple\&url\=$url

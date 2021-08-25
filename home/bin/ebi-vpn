@@ -1,0 +1,15 @@
+#!/usr/bin/expect -f
+
+set timeout -1
+
+spawn /Users/horta/bin/ebi-vpn.sh
+
+expect "password:"
+set code [exec /Users/horta/bin/ebi-passcode --show=true]
+send "$code\r"
+
+expect "password#2:"
+set pass [exec /Users/horta/bin/ebi-password]
+send "$pass\r"
+
+expect eof

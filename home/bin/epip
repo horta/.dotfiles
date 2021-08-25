@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# pip search $1 | grep -e "^$1 "
+yolk -V $1 | head -n 1 | grep -e "^.* " | cut -d' ' -f2

@@ -1,0 +1,26 @@
+#!/bin/bash
+
+if [ $# != 1 ]
+then
+    echo "Usage: store <FILE>"
+    exit 1
+fi
+
+FILE=$1
+
+if [ ! -f $FILE ]
+then
+    echo "$FILE does not exist."
+    exit 1
+fi
+
+NAME=$(basename $FILE)
+HOST=rasp.local.lan
+RDIR=/home/pi/$NAME
+
+scp $FILE pi@$HOST:/home/pi/
+CID=$(ssh pi@$HOST "ipfs add -w -q $NAME -- $RDIR | tail -n1 | tr -d '\n' && rm $RDIR")
+
+URL=https://ipfs.io/ipfs/$CID/$NAME
+echo -n $URL | pbcopy
+echo $URL copied to clipboard.

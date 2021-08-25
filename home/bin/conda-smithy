@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+IMAGE=hortaebi/conda-smithy
+VERSION=latest
+
+docker run -v $(pwd):/$(basename $(pwd)) -w /$(basename $(pwd)) \
+  -it $IMAGE:$VERSION /bin/bash -c "conda smithy rerender"

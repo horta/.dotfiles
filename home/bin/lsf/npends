@@ -1,0 +1,3 @@
+#!/bin/bash
+
+bjobs | grep PEND | wc -l

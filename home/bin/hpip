@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+set -o errexit
+
+pushd . >/dev/null
+
+function finish {
+    popd >/dev/null
+}
+trap finish EXIT
+
+dir=$(mktemp -d)
+cd $dir
+
+pip download $1 --no-binary :all: --no-deps >/dev/null
+
+file=$(/bin/ls)
+pip hash $file
+
+rm $file
+rmdir $dir

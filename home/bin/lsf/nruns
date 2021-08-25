@@ -1,0 +1,3 @@
+#!/bin/bash
+
+bjobs | grep RUN | wc -l

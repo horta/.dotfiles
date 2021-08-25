@@ -1,0 +1,59 @@
+#!/usr/bin/env python
+
+import sys
+import fire
+import fasta_reader as fr
+import hashlib
+
+
+def _seq_hash(seq):
+    dig = hashlib.md5(seq.encode()).hexdigest()
+    return "".join(dig[1:3] + dig[15:17] + dig[28:30])
+
+
+def _defline(tgt, seq):
+    return f"{tgt.id}-{_seq_hash(seq)} {tgt.desc}"
+
+
+def complement(fasta_file):
+    with fr.write_fasta(sys.stdout) as out:
+        for tgt in fr.read_fasta(fasta_file):
+            seq = tgt.sequence.upper()
+            seq = seq.replace("A", "t").replace("T", "a")
+            seq = seq.replace("G", "c").replace("C", "g")
+            seq = seq.upper()
+            out.write_item(f"{_defline(tgt, seq)} +complement", seq)
+
+
+def reverse(fasta_file):
+    with fr.write_fasta(sys.stdout) as out:
+        for tgt in fr.read_fasta(fasta_file):
+            seq = "".join(reversed(tgt.sequence))
+            out.write_item(f"{_defline(tgt, seq)} +reverse", seq)
+
+
+def slice(fasta_file, start: int, stop: int):
+    with fr.write_fasta(sys.stdout) as out:
+        for tgt in fr.read_fasta(fasta_file):
+            seq = tgt.sequence
+
+            if start > stop:
+                raise ValueError("start > stop")
+
+            if start < 1:
+                raise ValueError("start < 1")
+            if start > len(seq):
+                raise ValueError("start > len(seq)")
+
+            if stop < 1:
+                raise ValueError("stop < 1")
+            if stop > len(seq):
+                raise ValueError("stop > len(seq)")
+
+            seq = seq[start-1:stop]
+            defline = f"{_defline(tgt, seq)} +slice({start}, {stop})"
+            out.write_item(defline, seq)
+
+
+if __name__ == '__main__':
+    fire.Fire()

@@ -1,0 +1,8 @@
+#!/bin/bash
+
+if [ "$#" -eq 1 ]
+then
+  ssh ebi-login-0"$1"
+else
+  ssh ebi-login-01
+fi

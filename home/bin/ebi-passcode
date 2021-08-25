@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+# dir=$(dirname ${BASH_SOURCE[0]})
+# export BARGS_VARS_PATH=$dir/.ebi-passcode_vars
+# source $dir/bargs.sh "$@"
+
+code=$(oathtool --totp -b $(<~/".totp_google") | tr -d '[:space:]')
+
+# if [ "${show}" == "true" ]
+# then
+    echo -n $code
+# else
+#     echo -n $code | pbcopy
+#     echo Copied to clipboard!
+# fi

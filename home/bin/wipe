@@ -1,0 +1,37 @@
+#!/bin/bash
+
+curdir=${PWD##*/}
+
+if [ ! "$(/bin/ls -A .)" ]
+then
+    echo "Nothing to be done: empty dir."
+    exit 0
+fi
+
+if [ ! $curdir = "build" ]
+then
+    echo "Unsafe to run it under a non-build directory."
+    exit 1
+fi
+
+if ! test -e CMakeCache.txt || test -d .git
+then
+    echo "It does not seem to be a build directory."
+    exit 1
+fi
+
+function ask
+{
+    while true; do
+        read -p "Do you wish to continue? " yn
+        case $yn in
+            [Yy]* ) break;;
+            [NnQq]* ) exit;;
+            * ) echo "Please answer yes or no.";;
+        esac
+    done
+}
+
+echo We are about to run \`rm -rf *\`!
+ask
+shopt -s dotglob && rm -rf *

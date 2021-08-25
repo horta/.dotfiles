@@ -1,0 +1,104 @@
+#!/bin/bash
+
+VERSION="0.1"
+
+parser_definition()
+{
+    setup REST help:usage -- "Usage: ct [options]" ''
+    msg -- 'Options:'
+    param TEST -t --test init:=".*" -- "run tests matching regex"
+    param NJOBS -n --njobs validate:number init:=1 -- "number of jobs in parallel"
+    disp :usage -h --help
+    disp VERSION --version
+}
+
+number()
+{
+    case $OPTARG in *[!0-9]*) return 1 ;; esac
+}
+
+eval "$(getoptions parser_definition - "$0") exit 1"
+
+set -e
+
+CURDIR=${PWD##*/}
+
+if [[ $CURDIR != "build" ]]; then
+    if [ -d build ]; then
+        cd build
+    else
+        echo "Unsafe to run it under a non-build directory."
+        exit 0
+    fi
+fi
+
+DEBUG=${DEBUG:-0}
+FUZZ=${FUZZ:-0}
+
+CMAKE_C_FLAGS=
+LINKER_FLAGS=
+ASAN_OPTIONS=
+C_FLAGS_DEBUG="-g -O0"
+CMAKE_FUZZ=
+
+export CC=/opt/homebrew/opt/llvm/bin/clang
+export PATH=/opt/homebrew/opt/llvm/bin:$PATH
+export LDFLAGS=-L/opt/homebrew/opt/llvm/lib
+export CPPFLAGS=-I/opt/homebrew/opt/llvm/include
+hash -r
+
+[[ $FUZZ != "0" ]] && [[ $DEBUG == "0" ]] && DEBUG=2
+
+if [[ $DEBUG != "0" ]]; then
+    TARGET=Debug
+    CMAKE_C_FLAGS="-fno-omit-frame-pointer -fno-optimize-sibling-calls -fsanitize=address -fsanitize=undefined -fsanitize-address-use-after-scope"
+    LINKER_FLAGS="-fsanitize=address -fsanitize=undefined"
+    ASAN_OPTIONS="detect_stack_use_after_return=1:symbolize=1:alloc_dealloc_mismatch=1"
+
+    if (("$DEBUG" > 1)); then
+        ASAN_OPTIONS="$ASAN_OPTIONS:detect_leaks=1"
+    fi
+
+    if (("$DEBUG" > 2)); then
+        CMAKE_C_FLAGS="$CMAKE_C_FLAGS -fsanitize=memory"
+        LINKER_FLAGS="$LINKER_FLAGS -fsanitize=memory"
+    fi
+else
+    TARGET=Release
+fi
+
+if [[ $FUZZ != "0" ]]; then
+    CMAKE_C_FLAGS="-fsanitize=fuzzer $CMAKE_C_FLAGS"
+    LINKER_FLAGS="-fsanitize=fuzzer $LINKER_FLAGS"
+    C_FLAGS_DEBUG="-g -O1"
+    CMAKE_FUZZ="-DFUZZ=ON"
+fi
+
+cmake \
+    $CMAKE_FUZZ \
+    -DCMAKE_BUILD_TYPE=$TARGET \
+    -DCMAKE_C_FLAGS="$CMAKE_C_FLAGS" \
+    -DCMAKE_SHARED_LINKER_FLAGS_INIT="$LINKER_FLAGS" \
+    -DCMAKE_EXE_LINKER_FLAGS_INIT="$LINKER_FLAGS" \
+    -DCMAKE_C_FLAGS_DEBUG:STRING="$C_FLAGS_DEBUG" ..
+
+FIELD=$(grep CMAKE_C_COMPILER: CMakeCache.txt | cut -d "=" -f2)
+CC=$(basename $(realpath $FIELD))
+
+cmake --build . --config $TARGET
+
+if [[ $CC =~ "clang" ]]; then
+    if [ -d /opt/homebrew/Cellar/llvm ]; then
+        files=(/opt/homebrew/Cellar/llvm/*)
+        version=$(basename "${files[0]}")
+        ASAN_SYMBOLIZER_PATH=/opt/homebrew/Cellar/llvm/$version/bin/llvm-symbolizer
+        if [[ ! -e $ASAN_SYMBOLIZER_PATH ]]; then
+            echo "File $ASAN_SYMBOLIZER_PATH does not exist."
+            exit 1
+        fi
+    fi
+fi
+
+export ASAN_OPTIONS
+export ASAN_SYMBOLIZER_PATH
+ctest -C $TARGET --output-on-failure -R $TEST -j $NJOBS

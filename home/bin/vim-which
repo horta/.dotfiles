@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+fp=$(which $1)
+$EDITOR $fp

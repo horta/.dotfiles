@@ -1,0 +1,10 @@
+#!/bin/zsh -i
+
+brew update && brew upgrade
+brew upgrade --cask wezterm-nightly --no-quarantine
+zinit self-update && zinit update --parallel --all && zinit compile --all
+jobs >/dev/null
+nvim-update
+conda activate
+conda update --all --yes
+conda deactivate
