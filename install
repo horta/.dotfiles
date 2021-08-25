@@ -35,17 +35,20 @@ function abort
     exit 1
 }
 
+if ! type stow >/dev/null; then
+    abort "Stow not found. Please, install it first."
+fi
+
 # https://unix.stackexchange.com/a/174818
 TMPDIR=$(dirname $(mktemp -u))
 
 function download
 {
-    URL=$1
-    NAME=$(basename $URL)
-    SHA1=$2
-    echo $NAME
+    local url=$1
+    local file=$(basename $url)
+    local sha1=$2
     cd $TMPDIR
-    curl --remote-name -# $URL
+    curl --remote-name -# $url || abort "Failed to download $file."
 }
 
 function exec_manifest_instr
