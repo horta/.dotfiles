@@ -49,9 +49,9 @@ function download
 
 function exec_chmod
 {
-    local oct="$1"
+    local mod="$1"
     local file="$2"
-    chmod "$oct" $file || abort "Failed to chmod $file."
+    chmod "$mod" $file || abort "Failed to chmod $file."
 }
 
 function exec_manifest_instr
@@ -77,13 +77,13 @@ done <$__dir__/MANIFEST
 [ -f home/bin/.DS_Store ] && /bin/rm home/bin/.DS_Store
 [ -f home/bin/lsf/.DS_Store ] && /bin/rm home/bin/lsf/.DS_Store
 
-exec_chmod 644 $__dir__/home/.zshrc
-exec_chmod 644 $__dir__/home/.vimrc
-exec_chmod 644 $__dir__/home/.bash_profile
-exec_chmod 644 $__dir__/home/.condarc
+# exec_chmod ug+x $__dir__/home
+# exec_chmod ug+x $__dir__/home/bin
+# exec_chmod ug+x $__dir__/home/bin/lsf
 
-exec_chmod 640 $__dir__/home/bin/*
-exec_chmod 640 $__dir__/home/bin/lsf/*
+# exec_chmod 644 $__dir__/home/.*
+# exec_chmod 640 $__dir__/home/bin/*
+# exec_chmod 640 $__dir__/home/bin/lsf/*
 
 stow -v -D home
 stow -v home

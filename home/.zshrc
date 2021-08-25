@@ -103,22 +103,7 @@ export EDITOR=vim
 command -v nvim 2>&1 >/dev/null && export EDITOR=nvim
 export VISUAL=$EDITOR
 
-alias b="git branch -a"
-alias e="exit"
-alias g="git"
-alias icat="kitty +kitten icat"
-alias l="ls"
-alias ll="ls -lah"
-alias t=tree
-alias s="git status"
-alias vim="$EDITOR"
-alias v="$EDITOR"
-alias ver="version"
-alias ..="cd .."
-# https://apple.stackexchange.com/questions/17622/how-can-i-make-rm-move-files-to-the-trash-can
-alias rm="echo Use 'del', or the full path i.e. '/bin/rm'"
-alias del="trash"
-alias vw="vim-which"
+source ~/.alias
 
 eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib=$HOME/perl5)"
 
