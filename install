@@ -58,7 +58,7 @@ function exec_manifest_instr
     echo "$hsh  $filename" >$filename.sha1
     sha1sum --quiet --check $filename.sha1 || abort "Hash failed for $filename."
     /bin/mv $filename $__dir__/$dst/
-    chmod +x $__dir__/$dst/ || abort "Failed to chmod $filename."
+    chmod +x $__dir__/$dst/$filename || abort "Failed to chmod $filename."
     popd >/dev/null
 }
 
@@ -69,6 +69,7 @@ done <$__dir__/MANIFEST
 exit 0
 
 for dir in home/*; do
+    echo $dir
     # stow -D $dir
     # stow $dir
 done
