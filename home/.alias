@@ -4,20 +4,24 @@ alias b="git branch -a"
 alias e="exit"
 alias g="git"
 alias icat="kitty +kitten icat"
-if [ "$OS" = "Darwin" ]; then
-    alias l="ls"
-    alias ll="ls -lah"
-else
-    alias l="ls --color=auto"
-    alias ll="ls -lah --color=auto"
-fi
 alias t=tree
 alias s="git status"
 alias vim="$EDITOR"
 alias v="$EDITOR"
 alias ver="version"
 alias ..="cd .."
-# https://apple.stackexchange.com/questions/17622/how-can-i-make-rm-move-files-to-the-trash-can
-alias rm="echo Use 'del', or the full path i.e. '/bin/rm'"
-alias del="trash"
 alias vw="vim-which"
+
+if [ "$HORTA_OS" = "Darwin" ]; then
+    alias l="ls"
+    alias ll="ls -lah"
+else
+    alias l="ls --color=auto"
+    alias ll="ls -lah --color=auto"
+fi
+
+if [ ! -z "$HORTA_TRASH_CMD" ]; then
+    # https://apple.stackexchange.com/a/17637
+    alias rm="echo Use 'del', or the full path i.e. '/bin/rm'"
+    alias del="$HORTA_TRASH_CMD"
+fi

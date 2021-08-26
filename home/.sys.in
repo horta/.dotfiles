@@ -1,3 +1,4 @@
 #!/bin/bash
 
-export OS={OS}
+export HORTA_OS={OS}
+export HORTA_TRASH_CMD={TRASH_CMD}

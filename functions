@@ -6,9 +6,14 @@ function die
     exit 1
 }
 
+function cmd_exist
+{
+    command -v $1 2>&1 >/dev/null
+}
+
 function assert_cmd_exist
 {
-    if ! type $1 >/dev/null; then
+    if ! cmd_exist $1; then
         die "Command $1 not found. Please, install it first."
     fi
 }

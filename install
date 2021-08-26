@@ -29,6 +29,9 @@ cd build
 find . -type f -name ".DS_Store" -delete
 
 sed -e "s/{OS}/$(uname)/" -i.bak home/.sys.in
+cmd_exist trash && sed -e "s/{TRASH_CMD}/trash/" -i.bak home/.sys.in
+cmd_exist rmtrash && sed -e "s/{TRASH_CMD}/rmthrash/" -i.bak home/.sys.in
+sed -e "s/{TRASH_CMD}//" -i.bak home/.sys.in
 /bin/mv home/.sys.in home/.sys
 /bin/rm home/.sys.in.bak
 
