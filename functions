@@ -47,7 +47,7 @@ function manifest_download
 
 function setup_build_dir
 {
-    [ -d build ] && /bin/rm -rf build || die "Could not delete build directory."
+    [ -d build ] && /bin/rm -rf build
     /bin/mkdir build || die "Could not create build directory."
     /bin/cp -r home build/home || die "Could not copy home directory."
 }
