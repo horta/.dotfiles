@@ -1,9 +1,16 @@
+#!/bin/bash
+
 alias b="git branch -a"
 alias e="exit"
 alias g="git"
 alias icat="kitty +kitten icat"
-alias l="ls"
-alias ll="ls -lah"
+if [ "$OS" = "Darwin" ]; then
+    alias l="ls"
+    alias ll="ls -lah"
+else
+    alias l="ls --color=auto"
+    alias ll="ls -lah --color=auto"
+fi
 alias t=tree
 alias s="git status"
 alias vim="$EDITOR"

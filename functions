@@ -1,0 +1,53 @@
+#!/bin/bash
+
+function die
+{
+    echo "🔥 $@" 1>&2
+    exit 1
+}
+
+function assert_cmd_exist
+{
+    if ! type $1 >/dev/null; then
+        die "Command $1 not found. Please, install it first."
+    fi
+}
+
+function download
+{
+    local tmpdir=$1
+    local url=$2
+    local file=$(basename $url)
+    local sha1=$3
+
+    cd $tmpdir || die "Failed to cd $tmpdir."
+    echo "Downloading $file..."
+    curl --remote-name -vv $url || die "Failed to download $file."
+    # curl --remote-name -# $url || die "Failed to download $file."
+}
+
+function manifest_download
+{
+    local tmpdir=$1
+    local url=$2
+    local hsh=$3
+    local dst="$PWD/build/$4"
+    local filename=$(basename $url)
+
+    pushd $tmpdir >/dev/null || die "Failed to cd $tmpdir."
+
+    download $tmpdir $url || die "Failed to download $filename."
+    echo "$hsh  $filename" >$filename.sha1
+    sha1sum --quiet --check $filename.sha1 || die "Failed to hash $filename."
+    /bin/mv $filename $dst/ || die "Failed to move $filename."
+    /bin/chmod +x $dst/$filename || die "Failed to chmod $filename."
+
+    popd >/dev/null
+}
+
+function setup_build_dir
+{
+    [ -d build ] && /bin/rm -rf build || die "Could not delete build directory."
+    /bin/mkdir build || die "Could not create build directory."
+    /bin/cp -r home build/home || die "Could not copy home directory."
+}

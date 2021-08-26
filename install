@@ -1,78 +1,38 @@
 #!/bin/bash
 
-ORIG_DIR="$PWD"
+# Change to original directory at the end
+trap "cd $PWD" EXIT
 
-function curr_file
+# Change to script directory
+function cd_root_dir
 {
-    __SOURCE__="${BASH_SOURCE[0]}"
-    while [[ -L ${__SOURCE__} ]]; do
+    local source="${BASH_SOURCE[0]}"
+    while [[ -L ${source} ]]; do
         # shellcheck disable=SC1117
-        __SOURCE__=$(find "${__SOURCE__}" -type l -ls | sed -n 's/^.* -> \(.*\)/\1/p')
+        source=$(find "${source}" -type l -ls | sed -n 's/^.* -> \(.*\)/\1/p')
     done
-    echo "${__SOURCE__}"
+    local dir=$(cd -P "$(dirname "${source}")" && pwd)
+    cd $dir || exit 1
 }
+cd_root_dir
 
-function dir_path
-{
-    echo $(cd -P "$(dirname "$1")" && pwd)
-}
+source functions || die "Failed to source functions."
 
-__file__="${curr_file}"
-__dir__=$(dir_path "${__file__}")
+tmpdir=$(dirname $(mktemp -u))
 
-function cleanup
-{
-    exec 3>&-
-    cd "$ORIG_DIR"
-}
-trap cleanup EXIT
-
-pushd $__dir__ >/dev/null
-
-function abort
-{
-    echo "🔥 $@" 1>&2
-    exit 1
-}
-
-if ! type stow >/dev/null; then
-    abort "Stow not found. Please, install it first."
-fi
-
-# https://unix.stackexchange.com/a/174818
-TMPDIR=$(dirname $(mktemp -u))
-
-function download
-{
-    local url=$1
-    local file=$(basename $url)
-    local sha1=$2
-    cd $TMPDIR
-    curl --remote-name -# $url || abort "Failed to download $file."
-}
-
-function exec_manifest_instr
-{
-    pushd $TMPDIR >/dev/null
-    local url=$1
-    local hsh=$2
-    local dst=$3
-    local filename=$(basename $url)
-    download $url || abort "Failed to download $filename."
-    echo "$hsh  $filename" >$filename.sha1
-    sha1sum --quiet --check $filename.sha1 || abort "Hash failed for $filename."
-    /bin/mv $filename $__dir__/$dst/ || abort "Failed to move $filename."
-    chmod +x $__dir__/$dst/$filename || abort "Failed to chmod $filename."
-    popd >/dev/null
-}
+assert_cmd_exist stow
+setup_build_dir
 
 while IFS= read -r line; do
-    exec_manifest_instr $line
-done <$__dir__/MANIFEST
+    manifest_download "$tmpdir" $line
+done <MANIFEST && echo "--"
 
-[ -f home/.DS_Store ] && /bin/rm home/.DS_Store
-[ -f home/bin/.DS_Store ] && /bin/rm home/bin/.DS_Store
-[ -f home/bin/lsf/.DS_Store ] && /bin/rm home/bin/lsf/.DS_Store
+cd build
+find . -type f -name ".DS_Store" -delete
 
-stow -v -D home
-stow -v home
+sed -e "s/{OS}/$(uname)/" -i .bak home/dot-sys.in
+/bin/mv home/dot-sys.in home/dot-sys
+/bin/rm home/dot-sys.in.bak
+
+stow -v --dotfiles --target $HOME -D home && echo "--" || die "Stow failed."
+stow -v --dotfiles --target $HOME home && echo "--" || die "Stow failed."
