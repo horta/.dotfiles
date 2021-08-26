@@ -15,30 +15,29 @@ function assert_cmd_exist
 
 function download
 {
-    local tmpdir=$1
-    local url=$2
+    local url=$1
     local file=$(basename $url)
-    local sha1=$3
+    local sha1=$2
 
-    cd $tmpdir || die "Failed to cd $tmpdir."
     echo "Downloading $file..."
-    curl --remote-name -vv $url || die "Failed to download $file."
-    # curl --remote-name -# $url || die "Failed to download $file."
+    curl --remote-name -# $url || die "Failed to download $file."
 }
 
 function manifest_download
 {
-    local tmpdir=$1
-    local url=$2
-    local hsh=$3
-    local dst="$PWD/build/$4"
+    local url=$1
+    local hsh=$2
+    local dst="$PWD/build/$3"
     local filename=$(basename $url)
 
+    local tmpdir=$(dirname $(mktemp -u))
     pushd $tmpdir >/dev/null || die "Failed to cd $tmpdir."
 
-    download $tmpdir $url || die "Failed to download $filename."
+    download $url || die "Failed to download $filename."
     echo "$hsh  $filename" >$filename.sha1
+
     sha1sum --quiet --check $filename.sha1 || die "Failed to hash $filename."
+
     /bin/mv $filename $dst/ || die "Failed to move $filename."
     /bin/chmod +x $dst/$filename || die "Failed to chmod $filename."
 

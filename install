@@ -18,21 +18,19 @@ cd_root_dir
 
 source functions || die "Failed to source functions."
 
-tmpdir=$(dirname $(mktemp -u))
-
 assert_cmd_exist stow
 setup_build_dir
 
 while IFS= read -r line; do
-    manifest_download "$tmpdir" $line
+    manifest_download $line
 done <MANIFEST && echo "--"
 
 cd build
 find . -type f -name ".DS_Store" -delete
 
-sed -e "s/{OS}/$(uname)/" -i .bak home/dot-sys.in
-/bin/mv home/dot-sys.in home/dot-sys
-/bin/rm home/dot-sys.in.bak
+sed -e "s/{OS}/$(uname)/" -i.bak home/.sys.in
+/bin/mv home/.sys.in home/.sys
+/bin/rm home/.sys.in.bak
 
-stow -v --dotfiles --target $HOME -D home && echo "--" || die "Stow failed."
-stow -v --dotfiles --target $HOME home && echo "--" || die "Stow failed."
+stow -v --target $HOME -D home && echo "--" || die "Stow failed."
+stow -v --target $HOME home && echo "--" || die "Stow failed."
