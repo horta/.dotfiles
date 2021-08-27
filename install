@@ -1,39 +1,49 @@
 #!/bin/bash
 
-# Change to original directory at the end
+# Change dir to the original one at the exit
 trap "cd $PWD" EXIT
 
-# Change to script directory
-function cd_root_dir
+# Change dir to script's
 {
-    local source="${BASH_SOURCE[0]}"
-    while [[ -L ${source} ]]; do
+    src="${BASH_SOURCE[0]}"
+    while [[ -L ${src} ]]; do
         # shellcheck disable=SC1117
-        source=$(find "${source}" -type l -ls | sed -n 's/^.* -> \(.*\)/\1/p')
+        src=$(find "${src}" -type l -ls | sed -n 's/^.* -> \(.*\)/\1/p')
     done
-    local dir=$(cd -P "$(dirname "${source}")" && pwd)
+    dir=$(cd -P "$(dirname "${src}")" && pwd)
     cd $dir || exit 1
 }
-cd_root_dir
 
 source functions || die "Failed to source functions."
 
-assert_cmd_exist stow
+assert_cmd_exist "stow"
 setup_build_dir
 
-while IFS= read -r line; do
-    manifest_download $line
-done <MANIFEST && echo "--"
+# Download files
+{
+    while IFS= read -r line; do
+        manifest_download $line
+    done <MANIFEST && echo "--"
+}
 
-cd build
-find . -type f -name ".DS_Store" -delete
+find build/ -type f -name ".DS_Store" -delete
 
-sed -e "s/{OS}/$(uname)/" -i.bak home/.sys.in
-cmd_exist trash && sed -e "s/{TRASH_CMD}/trash/" -i.bak home/.sys.in
-cmd_exist rmtrash && sed -e "s/{TRASH_CMD}/rmthrash/" -i.bak home/.sys.in
-sed -e "s/{TRASH_CMD}//" -i.bak home/.sys.in
-/bin/mv home/.sys.in home/.sys
-/bin/rm home/.sys.in.bak
+# .sys.in setup
+{
+    sys_set OS $(uname)
 
-stow -v --target $HOME -D home && echo "--" || die "Stow failed."
-stow -v --target $HOME home && echo "--" || die "Stow failed."
+    cmd_exist "trash" && sys_set "TRASH_CMD" "trash" ||
+        cmd_exist "rmtrash" && sys_set "TRASH_CMD" "rmtrash" ||
+        sys_set "TRASH_CMD" ""
+
+    cmd_exist fzf && sys_set HAS_FZF 1 || sys_set HAS_FZF 0
+
+    /bin/mv build/home/.sys.in home/.sys
+    /bin/rm build/home/.sys.in.bak
+}
+
+(
+    cd build
+    stow -v --target $HOME -D home && echo "--" || die "Stow failed."
+    stow -v --target $HOME home && echo "--" || die "Stow failed."
+)

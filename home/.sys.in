@@ -2,3 +2,4 @@
 
 export HORTA_OS={OS}
 export HORTA_TRASH_CMD={TRASH_CMD}
+export HORTA_HAS_FZF={HAS_FZF}

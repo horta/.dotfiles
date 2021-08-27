@@ -40,9 +40,6 @@ function add_path {
 }
 
 export GOPATH=$HOME/go
-export HISTSIZE=100000
-export SAVEHIST=$HISTSIZE
-export HISTFILE="$HOME/.zsh_history"
 export XDG_CONFIG_HOME=$HOME/.config
 export ZSH_AUTOSUGGEST_USE_ASYNC=1
 export PROMPT_LEAN_NOTITLE=1
@@ -84,24 +81,23 @@ ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(buffer-empty bracketed-paste accept-line push-li
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 ZSH_AUTOSUGGEST_USE_ASYNC=true
 
+[ $HORTA_HAS_FZF -eq 1 ] && source ~/.fzf_hist
+
 PROMPT_COMMAND='echo -ne "\033]0;${PWD#${PWD%?/*/*}?/}\007"'
 precmd() { eval "$PROMPT_COMMAND" }
 
-# This option is a variant of INC_APPEND_HISTORY in which, where possible, the
-# history entry is written out to the file after the command is finished
-# This option is only useful if INC_APPEND_HISTORY and SHARE_HISTORY are turned
-# off.
-setopt inc_append_history_time
-
-# Remove superfluous blanks before recording entry.
-setopt hist_reduce_blanks
-
-# Don't record an entry that was just recorded again.
+# History
+export HISTFILE="$HOME/.zsh_history"
+export HISTFILESIZE=100000
+export HISTSIZE=100000
+export SAVEHIST=$HISTSIZE
+setopt hist_find_no_dups
+setopt hist_ignore_all_dups
 setopt hist_ignore_dups
-
-# Remove command lines from the history list when the first character on the
-# line is a space.
 setopt hist_ignore_space
+setopt hist_reduce_blanks
+setopt inc_append_history
+setopt share_history
 
 export EDITOR=nano
 command -v vim 2>&1 >/dev/null && export EDITOR=vim
