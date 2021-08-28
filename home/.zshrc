@@ -88,18 +88,18 @@ ZSH_AUTOSUGGEST_USE_ASYNC=true
 PROMPT_COMMAND='echo -ne "\033]0;${PWD#${PWD%?/*/*}?/}\007"'
 precmd() { eval "$PROMPT_COMMAND" }
 
-# History
-export HISTFILE="$HOME/.zsh_history"
-export HISTFILESIZE=100000
-export HISTSIZE=100000
-export SAVEHIST=$HISTSIZE
-setopt hist_find_no_dups
-setopt hist_ignore_all_dups
-setopt hist_ignore_dups
-setopt hist_ignore_space
-setopt hist_reduce_blanks
-setopt inc_append_history
-setopt share_history
+## History file configuration
+HISTFILE="$HOME/.zsh_history"
+HISTSIZE=50000
+SAVEHIST=10000
+
+## History command configuration
+setopt extended_history       # record timestamp of command in HISTFILE
+setopt hist_expire_dups_first # delete duplicates first when HISTFILE size exceeds HISTSIZE
+setopt hist_ignore_dups       # ignore duplicated commands history list
+setopt hist_ignore_space      # ignore commands that start with space
+setopt hist_verify            # show command with history expansion to user before running it
+setopt share_history          # share command history data
 
 export EDITOR=nano
 command -v vim 2>&1 >/dev/null && export EDITOR=vim

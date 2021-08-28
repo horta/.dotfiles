@@ -5,7 +5,7 @@ source $HOME/.sys
 HISTCONTROL=ignoreboth
 shopt -s histappend
 HISTSIZE=10000
-HISTFILESIZE=20000
+HISTFILESIZE=200000
 
 shopt -s checkwinsize
 
