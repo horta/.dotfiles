@@ -37,6 +37,7 @@ find build/ -type f -name ".DS_Store" -delete
         sys_set "TRASH_CMD" ""
 
     cmd_exist fzf && sys_set HAS_FZF 1 || sys_set HAS_FZF 0
+    cmd_exist mcfly && sys_set HAS_MCFLY 1 || sys_set HAS_MCFLY 0
 
     /bin/mv build/home/.sys.in home/.sys
     /bin/rm build/home/.sys.in.bak

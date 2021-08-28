@@ -82,7 +82,9 @@ ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(buffer-empty bracketed-paste accept-line push-li
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 ZSH_AUTOSUGGEST_USE_ASYNC=true
 
-[ $HORTA_HAS_FZF -eq 1 ] && source ~/.fzf_hist
+
+[ $HORTA_HAS_MCFLY -eq 1 ] && eval "$(mcfly init zsh)" ||
+    [ $HORTA_HAS_FZF -eq 1 ] && source ~/.fzf_hist
 
 PROMPT_COMMAND='echo -ne "\033]0;${PWD#${PWD%?/*/*}?/}\007"'
 precmd() { eval "$PROMPT_COMMAND" }
