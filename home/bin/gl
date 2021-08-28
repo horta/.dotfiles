@@ -1,0 +1,3 @@
+#!/bin/bash
+
+googler -n 5 --url-handler "$HOME/bin/firefox-new-tab" $@
