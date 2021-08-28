@@ -3,3 +3,4 @@
 export HORTA_OS=Darwin
 export HORTA_TRASH_CMD=trash
 export HORTA_HAS_FZF=1
+export HORTA_HAS_MCFLY=1
