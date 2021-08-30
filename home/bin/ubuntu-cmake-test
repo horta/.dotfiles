@@ -1,0 +1,5 @@
+#!/bin/bash
+
+docker run --cap-add=SYS_PTRACE --security-opt seccomp=unconfined \
+    -v $dirpath:/$(basename $dirpath) -w /$(basename $dirpath) \
+    --platform linux/arm64/8 -it ubuntu-cmake-test:20.04
