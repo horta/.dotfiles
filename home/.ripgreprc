@@ -1,2 +1,3 @@
 --hidden
---ignore .git/
+-g
+!.git/
