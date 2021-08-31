@@ -49,6 +49,7 @@ export DOTFILES=$HOME/.dotfiles
 export STOW_FOLDERS="bin"
 export CLICOLOR=1
 export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+export RIPGREP_CONFIG_PATH=$HOME/.ripgreprc
 
 add_path $HOME/bin
 add_path /opt/homebrew/opt/ruby/bin
