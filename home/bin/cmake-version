@@ -1,0 +1,37 @@
+#!/bin/bash
+
+ORIGIN=$PWD
+
+function finish
+{
+    cd $ORIGIN >/dev/null
+}
+trap finish EXIT
+
+if [ $# -gt 1 ]; then
+    echo "Usage: cmake-version [DIR]"
+    exit 1
+fi
+
+if [ $# -eq 0 ]; then
+    dir=$PWD
+else
+    dir="$1"
+fi
+
+dir=$(realpath $dir)
+file=$dir/CMakeLists.txt
+if [ ! -e $file ]; then
+    echo "$file does not exist."
+    exit 1
+fi
+
+tmpdir=$(dirname $(mktemp -u))
+cd $tmpdir
+
+cat <<EOT >CMakeLists.txt
+include($file)
+message(STATUS "CMAKE_PROJECT_VERSION={\${CMAKE_PROJECT_VERSION}}")
+EOT
+
+cmake . 2>&1 | sed -n 's/-- CMAKE_PROJECT_VERSION={\(.*\)}/\1/p'

@@ -1,14 +1,26 @@
 #!/usr/bin/env python3
 
-from pathlib import Path
-import subprocess
 import configparser
 import importlib
 import importlib.metadata
-import subprocess
 import os
-import sys
 import re
+import subprocess
+import sys
+from contextlib import contextmanager
+from pathlib import Path
+
+import requests
+
+
+@contextmanager
+def cwd(path):
+    oldpwd = os.getcwd()
+    os.chdir(path)
+    try:
+        yield
+    finally:
+        os.chdir(oldpwd)
 
 
 def conda_forge_feedstock():
@@ -31,22 +43,17 @@ def is_git_repo():
 
 
 def cmakelists_version():
-    cmakelists = Path("CMakeLists.txt")
-    if not cmakelists.exists():
-        return
-
-    for row in open(cmakelists, "r"):
-        m = re.search(r"project *\(.* VERSION ([\d.]*)", row, re.IGNORECASE)
-        if m is None:
-            continue
-        version = m.groups()[0]
-        print(f"{version}\t({cmakelists})")
-        break
+    cmd = subprocess.run(
+        ["cmake-version"],
+        shell=True,
+        capture_output=True,
+    )
+    cmd.check_returncode()
+    version = cmd.stdout.strip().decode()
+    print(f"{version}\t(cmake)")
 
 
 def github_release():
-    import requests
-    import subprocess
 
     cmd = subprocess.run(
         ["git", "config", "--get", "remote.origin.url"], capture_output=True
@@ -60,7 +67,7 @@ def github_release():
     r = requests.get(url)
     version = r.json().get("tag_name", None)
     if version is not None:
-        print(f"{version}\t(Github release)")
+        print(f"{version}\t(github release)")
 
 
 def git_tag():
