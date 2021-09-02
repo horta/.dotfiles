@@ -11,6 +11,7 @@ alias v="$EDITOR"
 alias ver="version"
 alias ..="cd .."
 alias vw="vim-which"
+alias ci="gh run list"
 
 if [ "$HORTA_OS" = "Darwin" ]; then
     alias l="ls"

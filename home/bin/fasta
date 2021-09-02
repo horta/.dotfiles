@@ -1,9 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
-import sys
-import fire
-import fasta_reader as fr
 import hashlib
+import sys
+
+import fasta_reader as fr
+import fire
 
 
 def _seq_hash(seq):
@@ -50,10 +51,10 @@ def slice(fasta_file, start: int, stop: int):
             if stop > len(seq):
                 raise ValueError("stop > len(seq)")
 
-            seq = seq[start-1:stop]
+            seq = seq[start - 1 : stop]
             defline = f"{_defline(tgt, seq)} +slice({start}, {stop})"
             out.write_item(defline, seq)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     fire.Fire()
