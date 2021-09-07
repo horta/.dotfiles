@@ -1,9 +1,32 @@
 #!/bin/bash
 
-if [ $# = 0 ]; then
-    dirpath=$PWD
+function show_usage
+{
+    echo "Usage: ubuntu-cmake-test [DIR] [PLATFORM]"
+    echo "  PLATFORM: linux/arm64 (default)"
+    echo "            linux/amd64"
+}
+
+platform=linux/arm64
+dirpath=$(realpath $PWD)
+
+if [ $# -gt 0 ]; then
+    if [ "$1" == "--help" ]; then
+        show_usage
+        exit 0
+    fi
+    dirpath=$(realpath "$1")
+    shift
+fi
+
+if [ $# -gt 0 ]; then
+    platform="$1"
+    shift
+else
+    show_usage
+    exit 1
 fi
 
 docker run --cap-add=SYS_PTRACE --security-opt seccomp=unconfined \
     -v $dirpath:/$(basename $dirpath) -w /$(basename $dirpath) \
-    --platform linux/arm64/8 -it ubuntu-cmake-test:20.04
+    --platform $platform -it hortaebi/ubuntu-cmake-test:20.10 $@
