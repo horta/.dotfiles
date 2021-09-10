@@ -35,7 +35,7 @@ function manifest_download
     local dst="$PWD/build/$3"
     local filename=$(basename $url)
 
-    local tmpdir=$(dirname $(mktemp -u))
+    local tmpdir=$(mktemp -d 2>/dev/null || mktemp -d -t 'dotfiles')
     pushd $tmpdir >/dev/null || die "Failed to cd $tmpdir."
 
     download $url || die "Failed to download $filename."
