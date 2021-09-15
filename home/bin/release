@@ -1,0 +1,9 @@
+#!/bin/bash
+
+tag=$(git tag --points-at HEAD)
+
+if [ ! -z "$tag" ]; then
+    gh release create -t "" -n "" $tag
+else
+    version
+fi

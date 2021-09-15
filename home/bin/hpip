@@ -4,7 +4,8 @@ set -o errexit
 
 pushd . >/dev/null
 
-function finish {
+function finish
+{
     popd >/dev/null
 }
 trap finish EXIT
@@ -12,10 +13,10 @@ trap finish EXIT
 dir=$(mktemp -d)
 cd $dir
 
-pip download $1 --no-binary :all: --no-deps >/dev/null
+pip3 download $1 --no-binary :all: --no-deps >/dev/null
 
 file=$(/bin/ls)
-pip hash $file
+pip3 hash $file
 
 rm $file
 rmdir $dir
