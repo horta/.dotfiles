@@ -1,10 +1,17 @@
 #!/usr/bin/env bash
 
-url=$1
-if (( $# != 1 ))
-then
+url="$@"
+if (($# != 1)); then
     prog=$(basename $0)
     echo "Usage: $prog <url>"
     exit 1
 fi
-curl https://is.gd/create.php\?format\=simple\&url\=$url
+
+ISGD="https://is.gd/create.php"
+URL=$(curl --silent -G --data-urlencode "format=simple" --data-urlencode "url=$url" $ISGD)
+
+if type pbcopy 2>&1 >/dev/null; then
+    echo -n $URL | pbcopy
+fi
+
+echo $URL

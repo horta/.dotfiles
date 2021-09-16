@@ -3,6 +3,7 @@
 brew update && brew upgrade
 zinit self-update && zinit update --parallel --all && zinit compile --all
 jobs >/dev/null
+pip3 install --upgrade pynvim
 nvim-update
 conda activate
 conda update --all --yes

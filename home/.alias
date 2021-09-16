@@ -12,6 +12,8 @@ alias ver="version"
 alias ..="cd .."
 alias vw="vim-which"
 alias ci="gh run list"
+alias lg="lazygit"
+alias btop="bpytop"
 
 if [ "$HORTA_OS" = "Darwin" ]; then
     alias l="ls"

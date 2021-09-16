@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+ABOUT=""
+
+while true; do
+    echo "1: cmake"
+    read -n  1 -p "What subject do you want to help? " answer
+    case $answer in
+        [1]* ) ABOUT="cmake"; break;;
+        [qe]* ) exit;;
+        * ) echo "Please select a number or q/e to exit.";;
+    esac
+done
+
+echo ""
+
+if [ $ABOUT = "cmake" ]
+then
+while true; do
+    echo "1: cmake.warn"
+    echo "2: cmake.ci"
+    read -n  1 -p "What subject do you want to help? " answer
+    case $answer in
+        [1]* ) ABOUT="$ABOUT.warn"; break;;
+        [2]* ) ABOUT="$ABOUT.ci"; break;;
+        [qe]* ) exit;;
+        * ) echo "Please select a number or q/e to exit.";;
+    esac
+done
+fi
+
+FILE=$HOME/helper/$ABOUT.txt
+cat $FILE | pbcopy
+bat -l CMakeLists.txt $FILE
