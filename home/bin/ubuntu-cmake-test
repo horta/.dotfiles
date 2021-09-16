@@ -2,13 +2,14 @@
 
 function show_usage
 {
-    echo "Usage: ubuntu-cmake-test [DIR] [PLATFORM]"
+    echo "Usage: ubuntu-cmake-test [DIR] [PLATFORM] [TAG]"
     echo "  PLATFORM: linux/arm64 (default)"
     echo "            linux/amd64"
 }
 
-platform=linux/arm64
 dirpath=$(realpath $PWD)
+platform=linux/arm64
+tag=21.10
 
 if [ $# -gt 0 ]; then
     if [ "$1" == "--help" ]; then
@@ -27,6 +28,14 @@ else
     exit 1
 fi
 
+if [ $# -gt 0 ]; then
+    tag="$1"
+    shift
+else
+    show_usage
+    exit 1
+fi
+
 docker run --cap-add=SYS_PTRACE --security-opt seccomp=unconfined \
     -v $dirpath:/$(basename $dirpath) -w /$(basename $dirpath) \
-    --platform $platform -it hortaebi/ubuntu-cmake-test:20.10 $@
+    --platform $platform -it hortaebi/ubuntu-cmake-test:$tag $@
