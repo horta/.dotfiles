@@ -91,9 +91,9 @@ PROMPT_COMMAND='echo -ne "\033]0;${PWD#${PWD%?/*/*}?/}\007"'
 precmd() { eval "$PROMPT_COMMAND" }
 
 ## History file configuration
-HISTFILE="$HOME/.zsh_history"
-HISTSIZE=50000
-SAVEHIST=10000
+EXPORT HISTFILE="$HOME/.zsh_history"
+EXPORT HISTSIZE=100000
+EXPORT SAVEHIST=50000
 
 ## History command configuration
 setopt extended_history       # record timestamp of command in HISTFILE
