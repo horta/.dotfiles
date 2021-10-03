@@ -1,0 +1,33 @@
+#!/bin/bash
+
+IMAGE=hortaebi/hmmer
+VERSION=latest
+
+# Commands:
+#
+# - alimask
+# - hmmalign
+# - hmmbuild
+# - hmmconvert
+# - hmmemit
+# - hmmfetch
+# - hmmlogo
+# - hmmpgmd
+# - hmmpgmd_shard
+# - hmmpress
+# - hmmscan
+# - hmmsearch
+# - hmmsim
+# - hmmstat
+# - jackhmmer
+# - makehmmerdb
+# - nhmmer
+# - nhmmscan
+# - phmmer
+
+CMD=$1
+shift
+
+docker run -v $(pwd):/$(basename $(pwd)) -w /$(basename $(pwd)) \
+    --platform linux/amd64 \
+    -it $IMAGE:$VERSION /usr/local/bin/$CMD $@

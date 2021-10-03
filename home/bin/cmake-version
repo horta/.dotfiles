@@ -19,18 +19,20 @@ else
     dir="$1"
 fi
 
-dir=$(realpath $dir)
-file=$dir/CMakeLists.txt
+file=CMakeLists.txt
 if [ ! -e $file ]; then
     echo "$file does not exist."
     exit 1
 fi
 
-tmpdir=$(dirname $(mktemp -u))
-cd $tmpdir
+tmpdir=$(mktemp -d)
+stow --target $tmpdir . && cd $tmpdir
+mv CMakeLists.txt CMakeLists.original.txt
 
 cat <<EOT >CMakeLists.txt
-include($file)
+cmake_minimum_required(VERSION 3.11)
+project(cmake_version)
+include(CMakeLists.original.txt)
 message(STATUS "CMAKE_PROJECT_VERSION={\${CMAKE_PROJECT_VERSION}}")
 EOT
 
