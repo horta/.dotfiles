@@ -16,6 +16,8 @@ trap "cd $PWD" EXIT
 
 source functions || die "Failed to source functions."
 
+lock
+
 assert_cmd_exist "stow"
 setup_build_dir
 
@@ -63,3 +65,5 @@ find build/ -type f -name ".DS_Store" -delete
     stow -v --target $HOME -D home && echo "--" || die "Stow failed."
     stow -v --target $HOME home && echo "--" || die "Stow failed."
 )
+
+unlock

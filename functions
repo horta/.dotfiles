@@ -6,6 +6,16 @@ function die
     exit 1
 }
 
+function lock
+{
+    /usr/bin/touch .lock && chflags uchg .lock
+}
+
+function unlock
+{
+    /usr/bin/chflags nouchg .lock && /bin/rm .lock
+}
+
 function cmd_exist
 {
     command -v $1 2>&1 >/dev/null
@@ -60,5 +70,5 @@ function sys_set
 {
     local name=$1
     local value=$2
-    /usr/bin/sed -e "s/{$name}/$value/" -i.bak build/home/.sys.in
+    /usr/bin/sed -u -e "s/{$name}/$value/" -I.bak build/home/.sys.in
 }
