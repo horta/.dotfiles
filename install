@@ -52,6 +52,10 @@ find build/ -type f -name ".DS_Store" -delete
         git config --global user.email "danilo.horta@pm.me"
         git config --global user.name "Danilo Horta"
     fi
+    if ! git config --global credential.helper >/dev/null
+    then
+        git config --global credential.helper manager-core
+    fi
 }
 
 # Key repeat setup
