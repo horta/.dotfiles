@@ -39,8 +39,14 @@ find build/ -type f -name ".DS_Store" -delete
     cmd_exist fzf && sys_set HAS_FZF 1 || sys_set HAS_FZF 0
     cmd_exist mcfly && sys_set HAS_MCFLY 1 || sys_set HAS_MCFLY 0
 
-    /bin/mv build/home/.sys.in home/.sys
+    /bin/mv build/home/.sys.in build/home/.sys
     /bin/rm build/home/.sys.in.bak
+}
+
+# Key repeat setup
+{
+    defaults write -g InitialKeyRepeat -int 10
+    defaults write -g KeyRepeat -int 1
 }
 
 (

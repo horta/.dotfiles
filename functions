@@ -41,7 +41,7 @@ function manifest_download
     download $url || die "Failed to download $filename."
     echo "$hsh  $filename" >$filename.sha1
 
-    sha1sum --quiet --check $filename.sha1 || die "Failed to hash $filename."
+    /usr/bin/shasum --quiet --check $filename.sha1 || die "Failed to hash $filename."
 
     /bin/mv $filename $dst/ || die "Failed to move $filename."
     /bin/chmod +x $dst/$filename || die "Failed to chmod $filename."
