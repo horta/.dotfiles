@@ -43,6 +43,15 @@ find build/ -type f -name ".DS_Store" -delete
     /bin/rm build/home/.sys.in.bak
 }
 
+# Git setup
+{
+    if ! git config --global --get user.email >/dev/null
+    then
+        git config --global user.email "danilo.horta@pm.me"
+        git config --global user.name "Danilo Horta"
+    fi
+}
+
 # Key repeat setup
 {
     defaults write -g InitialKeyRepeat -int 10
