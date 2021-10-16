@@ -70,5 +70,5 @@ function sys_set
 {
     local name=$1
     local value=$2
-    /usr/bin/sed -u -e "s/{$name}/$value/" -I.bak build/home/.sys.in
+    /usr/bin/sed -u -e "s%{$name}%$value%" -I.bak build/home/.sys.in
 }

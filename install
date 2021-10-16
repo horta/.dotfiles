@@ -40,6 +40,8 @@ find build/ -type f -name ".DS_Store" -delete
 
     cmd_exist fzf && sys_set HAS_FZF 1 || sys_set HAS_FZF 0
     cmd_exist mcfly && sys_set HAS_MCFLY 1 || sys_set HAS_MCFLY 0
+    cmd_exist brew && sys_set BREW_PREFIX $(brew --prefix)
+    cmd_exist brew && sys_set HAS_BREW 1 || sys_set HAS_BREW 0
 
     /bin/mv build/home/.sys.in build/home/.sys
     /bin/rm build/home/.sys.in.bak
@@ -47,13 +49,11 @@ find build/ -type f -name ".DS_Store" -delete
 
 # Git setup
 {
-    if ! git config --global --get user.email >/dev/null
-    then
+    if ! git config --global --get user.email >/dev/null; then
         git config --global user.email "danilo.horta@pm.me"
         git config --global user.name "Danilo Horta"
     fi
-    if ! git config --global credential.helper >/dev/null
-    then
+    if ! git config --global credential.helper >/dev/null; then
         git config --global credential.helper manager-core
     fi
 }
