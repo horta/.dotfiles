@@ -56,7 +56,7 @@ export RIPGREP_CONFIG_PATH=$HOME/.ripgreprc
 add_path $HOME/bin
 [ $HORTA_HAS_BREW -eq 1 ] && add_path $HORTA_BREW_PREFIX/opt/ruby/bin
 [ $HORTA_HAS_BREW -eq 1 ] && add_path $HORTA_BREW_PREFIX/opt/cython/bin
-[ $HORTA_HAS_BREW -eq 1 ] && add_path $HORTA_BREW_PREFIX/ruby/bin
+[ $HORTA_HAS_BREW -eq 1 ] && add_path $HORTA_BREW_PREFIX/opt/ruby/bin
 add_path $HOME/.local/share/gem/ruby/3.0.0/bin
 #add_path /opt/homebrew/lib/ruby/gems/3.0.0/bin
 #add_path /Users/horta/Library/Python/3.9/bin
