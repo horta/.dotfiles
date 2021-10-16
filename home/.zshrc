@@ -54,11 +54,12 @@ export MANPAGER='nvim +Man!'
 export RIPGREP_CONFIG_PATH=$HOME/.ripgreprc
 
 add_path $HOME/bin
-add_path /opt/homebrew/opt/ruby/bin
-add_path /opt/homebrew/opt/cython/bin
+add_path /usr/local/opt/ruby/bin
+add_path /usr/local/opt/cython/bin
 add_path $HOME/.local/share/gem/ruby/3.0.0/bin
-add_path /opt/homebrew/lib/ruby/gems/3.0.0/bin
-add_path /Users/horta/Library/Python/3.9/bin
+#add_path /opt/homebrew/lib/ruby/gems/3.0.0/bin
+add_path /usr/local/opt/ruby/bin
+#add_path /Users/horta/Library/Python/3.9/bin
 add_path $GOPATH/bin
 
 # zinit light ael-code/zsh-colored-man-pages
