@@ -59,7 +59,7 @@ then
     add_path $HORTA_BREW_PREFIX/opt/ruby/bin
     add_path $HORTA_BREW_PREFIX/opt/cython/bin
     add_path $HORTA_BREW_PREFIX/opt/ruby/bin
-    add_path /opt/homebrew/lib/ruby/gems/3.0.0/bin
+    add_path $HORTA_BREW_PREFIX/lib/ruby/gems/3.0.0/bin
 fi
 [ -d $HOME/.local/share/gem/ruby ] && add_path $HOME/.local/share/gem/ruby/3.0.0/bin
 add_path $GOPATH/bin
