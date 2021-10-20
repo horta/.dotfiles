@@ -1,6 +1,6 @@
 #!/bin/bash
 
-tag=$(git tag --points-at HEAD)
+tag=$(git tag --points-at HEAD | tail -n 1)
 
 if [ ! -z "$tag" ]; then
     gh release create -t "" -n "" $tag
