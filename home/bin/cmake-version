@@ -26,7 +26,7 @@ if [ ! -e $file ]; then
 fi
 
 tmpdir=$(mktemp -d)
-stow --no-folding --target $tmpdir . && cd $tmpdir
+stow --no-folding --target $tmpdir . && cd $tmpdir || exit 1
 mv CMakeLists.txt CMakeLists.original.txt
 
 cat <<EOT >CMakeLists.txt

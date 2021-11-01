@@ -1,0 +1,5 @@
+#!/bin/zsh
+
+code=$(/opt/homebrew/bin/oathtool --totp -b $(<~/".totp_dashlane") | tr -d '[:space:]')
+echo -n $code | pbcopy
+echo $code
