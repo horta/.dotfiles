@@ -69,7 +69,7 @@ then
 fi
 [ -d $HOME/.local/share/gem/ruby ] && add_path $HOME/.local/share/gem/ruby/3.0.0/bin
 add_path $GOPATH/bin
-if [ $HORTA_HAS_CARGO -eq 1];
+if [ $HORTA_HAS_CARGO -eq 1 ];
 then
     add_path $HOME/.cargo/bin
 fi

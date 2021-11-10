@@ -42,7 +42,7 @@ find build/ -type f -name ".DS_Store" -delete
     cmd_exist mcfly && sys_set HAS_MCFLY 1 || sys_set HAS_MCFLY 0
     cmd_exist brew && sys_set BREW_PREFIX $(brew --prefix)
     cmd_exist brew && sys_set HAS_BREW 1 || sys_set HAS_BREW 0
-    cmd_exist cargo && sys_set HAS_CARGO 1 || sys_set HAS_CARG 0
+    cmd_exist cargo && sys_set HAS_CARGO 1 || sys_set HAS_CARGO 0
 
     /bin/mv build/home/.sys.in build/home/.sys
     /bin/rm build/home/.sys.in.bak
