@@ -9,7 +9,7 @@ function show_usage
 
 dirpath=$(realpath $PWD)
 platform=linux/arm64
-tag=21.10
+tag=impish
 
 if [ $# -gt 0 ]; then
     if [ "$1" == "--help" ]; then
