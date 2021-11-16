@@ -28,3 +28,5 @@ if [ ! -z "$HORTA_TRASH_CMD" ]; then
     alias rm="echo Use 'del', or the full path i.e. '/bin/rm'"
     alias del="$HORTA_TRASH_CMD"
 fi
+
+# if [ "$HORTA_HAS_KITTY" ]; then

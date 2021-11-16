@@ -8,4 +8,4 @@ nvim-update
 conda activate
 conda update --all --yes
 conda deactivate
-cargo update stylua
+cargo install stylua

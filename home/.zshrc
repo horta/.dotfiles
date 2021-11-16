@@ -73,6 +73,7 @@ if [ $HORTA_HAS_CARGO -eq 1 ];
 then
     add_path $HOME/.cargo/bin
 fi
+add_path /Users/horta/Library/Python/3.9/bin
 
 # Completion Management
 zinit ice blockf
