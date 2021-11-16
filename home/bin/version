@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import configparser
+import hashlib
 import importlib
 import importlib.metadata
 import os
@@ -66,8 +67,15 @@ def github_release():
 
     r = requests.get(url)
     version = r.json().get("tag_name", None)
+    tarball_url = f"https://github.com/{org}/{repo}/archive/{version}.tar.gz"
+
     if version is not None:
-        print(f"{version}\t(github release)")
+        if tarball_url is not None:
+            sha = hashlib.sha256()
+            sha.update(requests.get(tarball_url, allow_redirects=True).content)
+            print(f"{version}\t(github release) {sha.hexdigest()}")
+        else:
+            print(f"{version}\t(github release)")
 
 
 def git_tag():
