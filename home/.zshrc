@@ -58,6 +58,7 @@ export STOW_FOLDERS="bin"
 export CLICOLOR=1
 export MANPAGER='nvim +Man!'
 export RIPGREP_CONFIG_PATH=$HOME/.ripgreprc
+export CMAKE_BUILD_PARALLEL_LEVEL=4
 
 add_path $HOME/bin
 if [ $HORTA_HAS_BREW -eq 1 ];
