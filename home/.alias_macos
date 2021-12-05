@@ -1,0 +1,8 @@
+#!/bin/bash
+
+alias l="ls"
+alias ll="ls -lah"
+
+# https://apple.stackexchange.com/a/17637
+alias rm="echo Use 'del', or the full path i.e. '/bin/rm'"
+alias del="$HORTA_TRASH_CMD"

@@ -1,0 +1,4 @@
+#!/bin/bash
+
+alias l="ls --color=auto"
+alias ll="ls -lah --color=auto"
