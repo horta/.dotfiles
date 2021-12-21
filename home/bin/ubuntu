@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
 
+TAG=impish
+
 docker run --cap-add=SYS_PTRACE --security-opt seccomp=unconfined \
-    -v $(pwd):/$(basename $(pwd)) -w /$(basename $(pwd)) -it ubuntu:rolling /bin/bash
+    -v $(pwd):/$(basename $(pwd)) -w /$(basename $(pwd)) -it ubuntu:$TAG /bin/bash
+

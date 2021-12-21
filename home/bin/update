@@ -1,11 +1,8 @@
-#!/bin/zsh -i
+#!/usr/bin/env fish
 
 brew update && brew upgrade
-zinit self-update && zinit update --parallel --all && zinit compile --all
-jobs >/dev/null
 pip3 install --upgrade pynvim
 nvim-update
 conda activate
 conda update --all --yes
 conda deactivate
-cargo install stylua
