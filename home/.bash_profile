@@ -2,48 +2,58 @@
 
 source $HOME/.sys
 
-HISTCONTROL=ignoreboth
-shopt -s histappend
-HISTSIZE=10000
-HISTFILESIZE=200000
+bindkey -e
 
-shopt -s checkwinsize
+echoerr() { echo "🔥 $@" 1>&2; }
 
-case "$TERM" in
-xterm-color | *-256color) color_prompt=yes ;;
-esac
-
-# set variable identifying the chroot you work in (used in the prompt below)
-if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
-    debian_chroot=$(cat /etc/debian_chroot)
-fi
-
-if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w \$\[\033[00m\] '
-else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
-fi
-unset color_prompt force_color_prompt
-
-# If this is an xterm set the title to user@host:dir
-case "$TERM" in
-xterm* | rxvt*)
-    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-    ;;
-*) ;;
-esac
-
-if ! shopt -oq posix; then
-    if [ -f /usr/share/bash-completion/bash_completion ]; then
-        . /usr/share/bash-completion/bash_completion
-    elif [ -f /etc/bash_completion ]; then
-        . /etc/bash_completion
+function add_path {
+    if [ -d $1 ] || [ -L $1 ]
+    then
+        export PATH=$1:$PATH
+    else
+        echoerr "Directory $1 does not exist." >&2
     fi
+}
+
+export GOPATH=$HOME/go
+export XDG_CONFIG_HOME=$HOME/.config
+export PROMPT_LEAN_NOTITLE=1
+export C_INCLUDE_PATH=/usr/local/include
+export LIBRARY_PATH=/usr/local/lib
+export DOTFILES=$HOME/.dotfiles
+export STOW_FOLDERS="bin"
+export CLICOLOR=1
+export MANPAGER='nvim +Man!'
+export RIPGREP_CONFIG_PATH=$HOME/.ripgreprc
+export CMAKE_BUILD_PARALLEL_LEVEL=4
+export fish_greeting=
+
+add_path $HOME/bin
+if [ $HORTA_HAS_BREW -eq 1 ];
+then
+    add_path $HORTA_BREW_PREFIX/opt/ruby/bin
+    add_path $HORTA_BREW_PREFIX/opt/cython/bin
+    add_path $HORTA_BREW_PREFIX/opt/ruby/bin
+    add_path $HORTA_BREW_PREFIX/lib/ruby/gems/3.0.0/bin
 fi
+[ -d $HOME/.local/share/gem/ruby ] && add_path $HOME/.local/share/gem/ruby/3.0.0/bin
+add_path $GOPATH/bin
+if [ $HORTA_HAS_CARGO -eq 1 ];
+then
+    add_path $HOME/.cargo/bin
+fi
+add_path /Users/horta/Library/Python/3.9/bin
+add_path /Users/horta/local/bin
 
 export EDITOR=nano
 command -v vim 2>&1 >/dev/null && export EDITOR=vim
 command -v nvim 2>&1 >/dev/null && export EDITOR=nvim
 export VISUAL=$EDITOR
 
-source ~/.alias
+eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib=$HOME/perl5)"
+
+curr_shell=$(ps -p $PPID | tail -n 1 | sed 's/   */:/g' | cut -d' ' -f4)
+if [[ "$curr_shell" != "fish" && -z ${BASH_EXECUTION_STRING} ]]
+then
+	exec fish
+fi
