@@ -8,12 +8,21 @@ function die
 
 function lock
 {
-    /usr/bin/touch .lock && chflags uchg .lock
+    if [[ "$OS" == "linux" ]]; then
+        exec 100>.lock
+        flock -x 100
+    elif [[ "$OS" == "macos" ]]; then
+        /usr/bin/touch .lock && chflags uchg .lock
+    fi
 }
 
 function unlock
 {
-    /usr/bin/chflags nouchg .lock && /bin/rm .lock
+    if [[ "$OS" == "linux" ]]; then
+        exec 100>&- && /bin/rm .lock
+    elif [[ "$OS" == "macos" ]]; then
+        /usr/bin/chflags nouchg .lock && /bin/rm .lock
+    fi
 }
 
 function cmd_exist
@@ -70,5 +79,9 @@ function sys_set
 {
     local name=$1
     local value=$2
-    /usr/bin/sed -u -e "s%{$name}%$value%" -I.bak build/home/.sys.in
+    if [[ "$OS" == "linux" ]]; then
+        sed -u -e "s%{$name}%$value%" -i.bak build/home/.sys.in
+    elif [[ "$OS" == "macos" ]]; then
+        sed -u -e "s%{$name}%$value%" -I.bak build/home/.sys.in
+    fi
 }

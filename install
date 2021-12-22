@@ -14,6 +14,14 @@ trap "cd $PWD" EXIT
     cd $dir || exit 1
 }
 
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    export OS=linux
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+    export OS=macos
+else
+    die "Unsupported OS."
+fi
+
 source functions || die "Failed to source functions."
 
 lock
@@ -62,8 +70,10 @@ find build/ -type f -name ".DS_Store" -delete
 
 # Key repeat setup
 {
-    defaults write -g InitialKeyRepeat -int 10
-    defaults write -g KeyRepeat -int 1
+    if [[ "$OS" == "macos" ]]; then
+        defaults write -g InitialKeyRepeat -int 10
+        defaults write -g KeyRepeat -int 1
+    fi
 }
 
 (
